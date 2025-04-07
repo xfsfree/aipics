@@ -26,6 +26,54 @@
             background-color: #f5f7fa;
             color: var(--dark);
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         header {
@@ -35,6 +83,7 @@
             text-align: center;
             border-bottom: 5px solid var(--accent);
             margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease;
         }
         
         h1 {
@@ -47,6 +96,7 @@
             margin: 0 auto 3rem;
             text-align: center;
             padding: 0 1rem;
+            animation: fadeIn 1s ease;
         }
         
         .hero img {
@@ -54,6 +104,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             margin-bottom: 1.5rem;
+            animation: slideIn 0.8s ease;
         }
         
         .products {
@@ -71,7 +122,16 @@
             overflow: hidden;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideIn 0.6s ease;
+            animation-fill-mode: both;
         }
+        
+        .product:nth-child(1) { animation-delay: 0.1s; }
+        .product:nth-child(2) { animation-delay: 0.2s; }
+        .product:nth-child(3) { animation-delay: 0.3s; }
+        .product:nth-child(4) { animation-delay: 0.4s; }
+        .product:nth-child(5) { animation-delay: 0.5s; }
+        .product:nth-child(6) { animation-delay: 0.6s; }
         
         .product:hover {
             transform: translateY(-5px);
@@ -106,12 +166,13 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
             margin-top: 1rem;
         }
         
         .buy-btn:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
         }
         
         .checkout-modal {
@@ -125,6 +186,13 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .checkout-modal.active {
+            display: flex;
+            opacity: 1;
         }
         
         .modal-content {
@@ -135,6 +203,14 @@
             padding: 2rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .checkout-modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
         }
         
         .close-btn {
@@ -144,6 +220,11 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--dark);
+            transition: transform 0.3s;
+        }
+        
+        .close-btn:hover {
+            transform: rotate(90deg);
         }
         
         .form-group {
@@ -187,11 +268,31 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         
         .submit-btn:hover {
             opacity: 0.9;
+        }
+        
+        .submit-btn.loading {
+            color: transparent;
+        }
+        
+        .submit-btn.loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
         }
         
         .shake {
@@ -211,6 +312,7 @@
             text-align: center;
             padding: 2rem 1rem;
             margin-top: 3rem;
+            animation: fadeIn 1s ease;
         }
         
         .footer-links {
@@ -237,20 +339,24 @@
     </style>
 </head>
 <body>
+    <div class="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
     <header>
         <h1>AI Art Shop</h1>
         <p>Custom AI-Generated Digital Artwork</p>
     </header>
 
     <div class="hero">
-        <img src="https://source.unsplash.com/random/800x400/?ai,art,digital" alt="AI Generated Art Examples">
+        <img src="https://images.unsplash.com/photo-1682695797221-8164ff1fafc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80" alt="AI Generated Art Examples">
         <h2>Unique Digital Creations</h2>
         <p>Get custom AI-generated artwork tailored to your needs. Perfect for social media, websites, and personal projects.</p>
     </div>
 
     <div class="products">
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?icon,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1677442135136-760c813a743d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>Basic AI Icon</h3>
                 <p class="price">$3</p>
@@ -266,7 +372,7 @@
         </div>
 
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?portrait,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682687220063-4742bd7fd538?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>Standard AI Portrait</h3>
                 <p class="price">$5</p>
@@ -282,7 +388,7 @@
         </div>
 
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?hd,art,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682695796954-bad0d0f59ff1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>HD AI Art</h3>
                 <p class="price">$10</p>
@@ -298,7 +404,7 @@
         </div>
 
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?illustration,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682686580391-615b3b0b5a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>Premium AI Illustration</h3>
                 <p class="price">$20</p>
@@ -315,7 +421,7 @@
         </div>
 
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?logo,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682695797221-8164ff1fafc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>Commercial AI Logo</h3>
                 <p class="price">$30</p>
@@ -332,7 +438,7 @@
         </div>
 
         <div class="product">
-            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?character,ai')"></div>
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682686580391-615b3b0b5a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
             <div class="product-content">
                 <h3>AI Character Design</h3>
                 <p class="price">$50</p>
@@ -375,17 +481,6 @@
                     <div class="error-message" id="emailError">Please enter a valid email</div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="address">Address*</label>
-                    <input type="text" id="address" required>
-                    <div class="error-message" id="addressError">This field is required</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="notes">Special Instructions (Optional)</label>
-                    <textarea id="notes" rows="3"></textarea>
-                </div>
-                
                 <button type="submit" class="submit-btn">Proceed to Payment</button>
             </form>
         </div>
@@ -402,11 +497,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.querySelector('.loading').style.opacity = '0';
+                setTimeout(function() {
+                    document.querySelector('.loading').style.display = 'none';
+                }, 300);
+            }, 1000);
+            
             const modal = document.getElementById('checkoutModal');
             const closeBtn = document.querySelector('.close-btn');
             const buyButtons = document.querySelectorAll('.buy-btn');
             const checkoutForm = document.getElementById('checkoutForm');
-            const redirectUrl = 'https://your-payment-success-url.com'; // CHANGE THIS TO YOUR REDIRECT URL
+            const submitBtn = checkoutForm.querySelector('.submit-btn');
+            const redirectUrl = 'https://your-payment-success-url.com';
+            
+            function toggleModal(show) {
+                if (show) {
+                    document.body.classList.add('modal-open');
+                    modal.classList.add('active');
+                } else {
+                    document.body.classList.remove('modal-open');
+                    modal.classList.remove('active');
+                }
+            }
             
             buyButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -416,17 +529,17 @@
                     document.getElementById('productPrice').value = price;
                     document.getElementById('productName').value = product;
                     
-                    modal.style.display = 'flex';
+                    toggleModal(true);
                 });
             });
             
             closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
+                toggleModal(false);
             });
             
             window.addEventListener('click', function(event) {
                 if (event.target === modal) {
-                    modal.style.display = 'none';
+                    toggleModal(false);
                 }
             });
             
@@ -437,8 +550,7 @@
                 const requiredFields = [
                     { id: 'firstName', errorId: 'firstNameError', message: 'This field is required' },
                     { id: 'lastName', errorId: 'lastNameError', message: 'This field is required' },
-                    { id: 'email', errorId: 'emailError', message: 'Please enter a valid email', validate: (value) => /^\S+@\S+\.\S+$/.test(value) },
-                    { id: 'address', errorId: 'addressError', message: 'This field is required' }
+                    { id: 'email', errorId: 'emailError', message: 'Please enter a valid email', validate: (value) => /^\S+@\S+\.\S+$/.test(value) }
                 ];
                 
                 requiredFields.forEach(field => {
@@ -469,7 +581,12 @@
                 });
                 
                 if (isValid) {
-                    window.location.href = redirectUrl;
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                    
+                    setTimeout(function() {
+                        window.location.href = redirectUrl;
+                    }, 1500);
                 }
             });
         });

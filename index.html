@@ -4,7 +4,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Art Shop - Custom Digital Artwork</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #6e48aa;
+            --secondary: #9d50bb;
+            --accent: #4776E6;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hero {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            text-align: center;
+            padding: 0 1rem;
+        }
+        
+        .hero img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 1rem;
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+        }
+        
+        .product {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .product-content {
+            padding: 1.5rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+        
+        .buy-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .buy-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .checkout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+            border-color: var(--danger) !important;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -12,204 +242,237 @@
         <p>Custom AI-Generated Digital Artwork</p>
     </header>
 
-    <main>
-        <section class="products">
-            <div class="product">
-                <h2>Basic AI Icon</h2>
+    <div class="hero">
+        <img src="https://source.unsplash.com/random/800x400/?ai,art,digital" alt="AI Generated Art Examples">
+        <h2>Unique Digital Creations</h2>
+        <p>Get custom AI-generated artwork tailored to your needs. Perfect for social media, websites, and personal projects.</p>
+    </div>
+
+    <div class="products">
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?icon,ai')"></div>
+            <div class="product-content">
+                <h3>Basic AI Icon</h3>
                 <p class="price">$3</p>
-                <div class="description">
-                    <p>Simple 256x256px AI-generated icon/profile picture. Perfect for social media.</p>
-                    <ul>
-                        <li>Single subject</li>
-                        <li>PNG format</li>
-                        <li>Basic color scheme</li>
-                        <li>Delivery within 24 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="300" data-product="Basic AI Icon">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>Standard AI Portrait</h2>
-                <p class="price">$5</p>
-                <div class="description">
-                    <p>512x512px AI-generated portrait with moderate detail.</p>
-                    <ul>
-                        <li>Single subject</li>
-                        <li>PNG format</li>
-                        <li>Custom background</li>
-                        <li>Delivery within 24 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="500" data-product="Standard AI Portrait">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>HD AI Art</h2>
-                <p class="price">$10</p>
-                <div class="description">
-                    <p>1024x1024px high-definition AI artwork.</p>
-                    <ul>
-                        <li>More complex compositions</li>
-                        <li>PNG format</li>
-                        <li>Custom theme</li>
-                        <li>Delivery within 24 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="1000" data-product="HD AI Art">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>Premium AI Illustration</h2>
-                <p class="price">$20</p>
-                <div class="description">
-                    <p>2048x2048px premium AI-generated illustration.</p>
-                    <ul>
-                        <li>Highly detailed</li>
-                        <li>PNG + JPG formats</li>
-                        <li>Custom theme and style</li>
-                        <li>3 revisions</li>
-                        <li>Delivery within 48 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="2000" data-product="Premium AI Illustration">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>Commercial AI Logo</h2>
-                <p class="price">$30</p>
-                <div class="description">
-                    <p>Custom AI-generated logo with commercial use rights.</p>
-                    <ul>
-                        <li>Vector + PNG formats</li>
-                        <li>Business-appropriate</li>
-                        <li>3 concepts</li>
-                        <li>2 revisions</li>
-                        <li>Delivery within 48 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="3000" data-product="Commercial AI Logo">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>AI Character Design</h2>
-                <p class="price">$50</p>
-                <div class="description">
-                    <p>Custom AI-generated character with multiple views.</p>
-                    <ul>
-                        <li>Front + side views</li>
-                        <li>PNG format</li>
-                        <li>Custom outfit/features</li>
-                        <li>5 revisions</li>
-                        <li>Delivery within 72 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="5000" data-product="AI Character Design">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>AI Art Pack</h2>
-                <p class="price">$75</p>
-                <div class="description">
-                    <p>Set of 10 coordinated AI-generated artworks.</p>
-                    <ul>
-                        <li>1024x1024px each</li>
-                        <li>Consistent theme/style</li>
-                        <li>PNG format</li>
-                        <li>Great for game assets</li>
-                        <li>Delivery within 72 hours</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="7500" data-product="AI Art Pack">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>AI Concept Art Bundle</h2>
-                <p class="price">$100</p>
-                <div class="description">
-                    <p>Professional-grade AI concept art package.</p>
-                    <ul>
-                        <li>5 high-res concept pieces</li>
-                        <li>2048x2048px each</li>
-                        <li>PNG + JPG formats</li>
-                        <li>Unlimited revisions</li>
-                        <li>Delivery within 5 days</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="10000" data-product="AI Concept Art Bundle">Buy Now</button>
-            </div>
-
-            <div class="product">
-                <h2>Custom AI Art Collection</h2>
-                <p class="price">$150</p>
-                <div class="description">
-                    <p>Complete custom AI art collection with full rights.</p>
-                    <ul>
-                        <li>20 unique AI artworks</li>
-                        <li>Custom theme/style</li>
-                        <li>2048x2048px each</li>
-                        <li>PNG + JPG + vector formats</li>
-                        <li>Full commercial rights</li>
-                        <li>Delivery within 7 days</li>
-                    </ul>
-                </div>
-                <button class="buy-btn" data-price="15000" data-product="Custom AI Art Collection">Buy Now</button>
-            </div>
-        </section>
-
-        <div class="checkout-modal" id="checkoutModal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2>Complete Your Purchase</h2>
-                <form id="checkoutForm">
-                    <input type="hidden" id="productPrice" name="price">
-                    <input type="hidden" id="productName" name="product">
-                    
-                    <div class="form-group">
-                        <label for="firstName">First Name*</label>
-                        <input type="text" id="firstName" required>
-                        <div class="error-message"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="lastName">Last Name*</label>
-                        <input type="text" id="lastName" required>
-                        <div class="error-message"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email*</label>
-                        <input type="email" id="email" required>
-                        <div class="error-message"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="address">Address*</label>
-                        <input type="text" id="address" required>
-                        <div class="error-message"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="notes">Special Instructions (Optional)</label>
-                        <textarea id="notes" rows="3"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">Proceed to Payment</button>
-                </form>
+                <p>Simple 256x256px AI-generated icon/profile picture. Perfect for social media.</p>
+                <ul>
+                    <li>Single subject</li>
+                    <li>PNG format</li>
+                    <li>Basic color scheme</li>
+                    <li>Delivery within 24 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="3" data-product="Basic AI Icon">Buy Now</button>
             </div>
         </div>
-    </main>
+
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?portrait,ai')"></div>
+            <div class="product-content">
+                <h3>Standard AI Portrait</h3>
+                <p class="price">$5</p>
+                <p>512x512px AI-generated portrait with moderate detail.</p>
+                <ul>
+                    <li>Single subject</li>
+                    <li>PNG format</li>
+                    <li>Custom background</li>
+                    <li>Delivery within 24 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="5" data-product="Standard AI Portrait">Buy Now</button>
+            </div>
+        </div>
+
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?hd,art,ai')"></div>
+            <div class="product-content">
+                <h3>HD AI Art</h3>
+                <p class="price">$10</p>
+                <p>1024x1024px high-definition AI artwork.</p>
+                <ul>
+                    <li>More complex compositions</li>
+                    <li>PNG format</li>
+                    <li>Custom theme</li>
+                    <li>Delivery within 24 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="10" data-product="HD AI Art">Buy Now</button>
+            </div>
+        </div>
+
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?illustration,ai')"></div>
+            <div class="product-content">
+                <h3>Premium AI Illustration</h3>
+                <p class="price">$20</p>
+                <p>2048x2048px premium AI-generated illustration.</p>
+                <ul>
+                    <li>Highly detailed</li>
+                    <li>PNG + JPG formats</li>
+                    <li>Custom theme and style</li>
+                    <li>3 revisions</li>
+                    <li>Delivery within 48 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="20" data-product="Premium AI Illustration">Buy Now</button>
+            </div>
+        </div>
+
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?logo,ai')"></div>
+            <div class="product-content">
+                <h3>Commercial AI Logo</h3>
+                <p class="price">$30</p>
+                <p>Custom AI-generated logo with commercial use rights.</p>
+                <ul>
+                    <li>Vector + PNG formats</li>
+                    <li>Business-appropriate</li>
+                    <li>3 concepts</li>
+                    <li>2 revisions</li>
+                    <li>Delivery within 48 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="30" data-product="Commercial AI Logo">Buy Now</button>
+            </div>
+        </div>
+
+        <div class="product">
+            <div class="product-image" style="background-image: url('https://source.unsplash.com/random/300x200/?character,ai')"></div>
+            <div class="product-content">
+                <h3>AI Character Design</h3>
+                <p class="price">$50</p>
+                <p>Custom AI-generated character with multiple views.</p>
+                <ul>
+                    <li>Front + side views</li>
+                    <li>PNG format</li>
+                    <li>Custom outfit/features</li>
+                    <li>5 revisions</li>
+                    <li>Delivery within 72 hours</li>
+                </ul>
+                <button class="buy-btn" data-price="50" data-product="AI Character Design">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Complete Your Purchase</h2>
+            <form id="checkoutForm">
+                <input type="hidden" id="productPrice" name="price">
+                <input type="hidden" id="productName" name="product">
+                
+                <div class="form-group">
+                    <label for="firstName">First Name*</label>
+                    <input type="text" id="firstName" required>
+                    <div class="error-message" id="firstNameError">This field is required</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName">Last Name*</label>
+                    <input type="text" id="lastName" required>
+                    <div class="error-message" id="lastNameError">This field is required</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email*</label>
+                    <input type="email" id="email" required>
+                    <div class="error-message" id="emailError">Please enter a valid email</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address*</label>
+                    <input type="text" id="address" required>
+                    <div class="error-message" id="addressError">This field is required</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Special Instructions (Optional)</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-links">
-            <a href="terms.html">Terms of Service</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="refunds.html">Refund Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/refunds">Refund Policy</a>
         </div>
         <p class="copyright">© 2023 AI Art Shop. All artwork is generated by AI and sold as digital products. By purchasing, you agree to our terms.</p>
     </footer>
 
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('checkoutModal');
+            const closeBtn = document.querySelector('.close-btn');
+            const buyButtons = document.querySelectorAll('.buy-btn');
+            const checkoutForm = document.getElementById('checkoutForm');
+            const redirectUrl = 'https://your-payment-success-url.com'; // CHANGE THIS TO YOUR REDIRECT URL
+            
+            buyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const price = this.getAttribute('data-price');
+                    const product = this.getAttribute('data-product');
+                    
+                    document.getElementById('productPrice').value = price;
+                    document.getElementById('productName').value = product;
+                    
+                    modal.style.display = 'flex';
+                });
+            });
+            
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            checkoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                const requiredFields = [
+                    { id: 'firstName', errorId: 'firstNameError', message: 'This field is required' },
+                    { id: 'lastName', errorId: 'lastNameError', message: 'This field is required' },
+                    { id: 'email', errorId: 'emailError', message: 'Please enter a valid email', validate: (value) => /^\S+@\S+\.\S+$/.test(value) },
+                    { id: 'address', errorId: 'addressError', message: 'This field is required' }
+                ];
+                
+                requiredFields.forEach(field => {
+                    const input = document.getElementById(field.id);
+                    const error = document.getElementById(field.errorId);
+                    
+                    if (!input.value.trim()) {
+                        input.classList.add('shake');
+                        error.textContent = field.message;
+                        error.style.display = 'block';
+                        isValid = false;
+                        
+                        setTimeout(() => {
+                            input.classList.remove('shake');
+                        }, 500);
+                    } else if (field.validate && !field.validate(input.value)) {
+                        input.classList.add('shake');
+                        error.textContent = field.message;
+                        error.style.display = 'block';
+                        isValid = false;
+                        
+                        setTimeout(() => {
+                            input.classList.remove('shake');
+                        }, 500);
+                    } else {
+                        error.style.display = 'none';
+                    }
+                });
+                
+                if (isValid) {
+                    window.location.href = redirectUrl;
+                }
+            });
+        });
+    </script>
 </body>
 </html>

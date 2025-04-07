@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Art Shop - Custom Digital Artwork</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #6e48aa;
+            --primary-dark: #4d2d8a;
             --secondary: #9d50bb;
             --accent: #4776E6;
             --light: #f8f9fa;
             --dark: #343a40;
             --success: #28a745;
             --danger: #dc3545;
+            --premium: #ffc107;
+            --premium-dark: #e6a800;
         }
         
         * {
@@ -84,11 +88,38 @@
             border-bottom: 5px solid var(--accent);
             margin-bottom: 2rem;
             animation: fadeIn 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
         }
         
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
         }
         
         .hero {
@@ -105,6 +136,11 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             margin-bottom: 1.5rem;
             animation: slideIn 0.8s ease;
+            transition: transform 0.3s;
+        }
+        
+        .hero img:hover {
+            transform: scale(1.02);
         }
         
         .products {
@@ -112,7 +148,7 @@
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
             padding: 0 1rem;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto 3rem;
         }
         
@@ -124,6 +160,26 @@
             transition: transform 0.3s, box-shadow 0.3s;
             animation: slideIn 0.6s ease;
             animation-fill-mode: both;
+            position: relative;
+        }
+        
+        .product.premium {
+            border: 2px solid var(--premium);
+            box-shadow: 0 3px 15px rgba(255, 193, 7, 0.3);
+        }
+        
+        .product.premium::before {
+            content: "PREMIUM";
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: var(--premium);
+            color: var(--dark);
+            padding: 5px 30px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transform: rotate(45deg);
+            z-index: 1;
         }
         
         .product:nth-child(1) { animation-delay: 0.1s; }
@@ -132,16 +188,34 @@
         .product:nth-child(4) { animation-delay: 0.4s; }
         .product:nth-child(5) { animation-delay: 0.5s; }
         .product:nth-child(6) { animation-delay: 0.6s; }
+        .product:nth-child(7) { animation-delay: 0.7s; }
+        .product:nth-child(8) { animation-delay: 0.8s; }
         
         .product:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
+        .product.premium:hover {
+            box-shadow: 0 10px 20px rgba(255, 193, 7, 0.4);
+        }
+        
         .product-image {
             height: 200px;
             background-size: cover;
             background-position: center;
+            position: relative;
+        }
+        
+        .product-image::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            pointer-events: none;
         }
         
         .product-content {
@@ -153,6 +227,10 @@
             font-weight: bold;
             color: var(--primary);
             margin: 0.5rem 0;
+        }
+        
+        .product.premium .price {
+            color: var(--premium-dark);
         }
         
         .buy-btn {
@@ -168,11 +246,52 @@
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product.premium .buy-btn {
+            background: linear-gradient(to right, var(--premium), var(--premium-dark));
+            color: var(--dark);
         }
         
         .buy-btn:hover {
             opacity: 0.9;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .buy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .buy-btn::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, 
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.3) 50%,
+                rgba(255,255,255,0) 100%);
+            transform: rotate(30deg) translate(-20px, -20px);
+            transition: transform 0.6s;
+        }
+        
+        .buy-btn:hover::after {
+            transform: rotate(30deg) translate(20px, 20px);
+        }
+        
+        .product ul {
+            margin: 1rem 0;
+            padding-left: 1.2rem;
+        }
+        
+        .product li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
         
         .checkout-modal {
@@ -221,10 +340,19 @@
             cursor: pointer;
             color: var(--dark);
             transition: transform 0.3s;
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
         
         .close-btn:hover {
             transform: rotate(90deg);
+            background: rgba(0,0,0,0.05);
         }
         
         .form-group {
@@ -243,12 +371,13 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1rem;
-            transition: border 0.3s;
+            transition: border 0.3s, box-shadow 0.3s;
         }
         
         input:focus, textarea:focus {
             border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(110, 72, 170, 0.2);
         }
         
         .error-message {
@@ -275,6 +404,7 @@
         
         .submit-btn:hover {
             opacity: 0.9;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .submit-btn.loading {
@@ -306,6 +436,22 @@
             40%, 80% { transform: translateX(5px); }
         }
         
+        .product-summary {
+            background: rgba(0,0,0,0.03);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-summary h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .product-summary .price {
+            font-size: 1.2rem;
+        }
+        
         footer {
             background: var(--dark);
             color: white;
@@ -313,6 +459,17 @@
             padding: 2rem 1rem;
             margin-top: 3rem;
             animation: fadeIn 1s ease;
+            position: relative;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
         }
         
         .footer-links {
@@ -320,12 +477,16 @@
             justify-content: center;
             gap: 1.5rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
         
         .footer-links a {
             color: white;
             text-decoration: none;
             transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .footer-links a:hover {
@@ -335,6 +496,38 @@
         .copyright {
             font-size: 0.875rem;
             opacity: 0.8;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s, color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        @media (max-width: 768px) {
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero img {
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -453,12 +646,57 @@
                 <button class="buy-btn" data-price="50" data-product="AI Character Design">Buy Now</button>
             </div>
         </div>
+
+        <!-- New $100 Product -->
+        <div class="product premium">
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682686580391-615b3b0b5a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
+            <div class="product-content">
+                <h3>AI Art Collection</h3>
+                <p class="price">$100</p>
+                <p>Complete set of 10 AI-generated artworks with consistent theme.</p>
+                <ul>
+                    <li>10 unique 2048x2048px artworks</li>
+                    <li>Custom theme and style</li>
+                    <li>PNG + JPG formats</li>
+                    <li>Unlimited revisions</li>
+                    <li>Commercial license included</li>
+                    <li>Delivery within 5 days</li>
+                </ul>
+                <button class="buy-btn" data-price="100" data-product="AI Art Collection">Buy Now</button>
+            </div>
+        </div>
+
+        <!-- New $150 Product -->
+        <div class="product premium">
+            <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1682695797221-8164ff1fafc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1287&q=80')"></div>
+            <div class="product-content">
+                <h3>AI Brand Identity Package</h3>
+                <p class="price">$150</p>
+                <p>Complete branding solution with AI-generated assets.</p>
+                <ul>
+                    <li>Custom logo + 3 variations</li>
+                    <li>5 social media banner designs</li>
+                    <li>3 product mockup designs</li>
+                    <li>Color palette and typography guide</li>
+                    <li>Full commercial rights</li>
+                    <li>Unlimited revisions</li>
+                    <li>Delivery within 7 days</li>
+                </ul>
+                <button class="buy-btn" data-price="150" data-product="AI Brand Identity Package">Buy Now</button>
+            </div>
+        </div>
     </div>
 
     <div class="checkout-modal" id="checkoutModal">
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2>Complete Your Purchase</h2>
+            
+            <div class="product-summary">
+                <h3 id="modalProductName">Product Name</h3>
+                <p class="price" id="modalProductPrice">$0.00</p>
+            </div>
+            
             <form id="checkoutForm">
                 <input type="hidden" id="productPrice" name="price">
                 <input type="hidden" id="productName" name="product">
@@ -481,16 +719,30 @@
                     <div class="error-message" id="emailError">Please enter a valid email</div>
                 </div>
                 
+                <div class="form-group">
+                    <label for="notes">Special Instructions (Optional)</label>
+                    <textarea id="notes" rows="3" placeholder="Describe what you want in your AI artwork..."></textarea>
+                </div>
+                
                 <button type="submit" class="submit-btn">Proceed to Payment</button>
             </form>
         </div>
     </div>
 
     <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
+        
         <div class="footer-links">
-            <a href="/terms">Terms of Service</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/refunds">Refund Policy</a>
+            <a href="/terms"><i class="fas fa-file-contract"></i> Terms of Service</a>
+            <a href="/privacy"><i class="fas fa-lock"></i> Privacy Policy</a>
+            <a href="/refunds"><i class="fas fa-undo"></i> Refund Policy</a>
+            <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
+            <a href="/faq"><i class="fas fa-question-circle"></i> FAQ</a>
         </div>
         <p class="copyright">© 2023 AI Art Shop. All artwork is generated by AI and sold as digital products. By purchasing, you agree to our terms.</p>
     </footer>
@@ -509,6 +761,8 @@
             const buyButtons = document.querySelectorAll('.buy-btn');
             const checkoutForm = document.getElementById('checkoutForm');
             const submitBtn = checkoutForm.querySelector('.submit-btn');
+            const modalProductName = document.getElementById('modalProductName');
+            const modalProductPrice = document.getElementById('modalProductPrice');
             const redirectUrl = 'https://your-payment-success-url.com';
             
             function toggleModal(show) {
@@ -528,6 +782,10 @@
                     
                     document.getElementById('productPrice').value = price;
                     document.getElementById('productName').value = product;
+                    
+                    // Update modal display
+                    modalProductName.textContent = product;
+                    modalProductPrice.textContent = `$${price}`;
                     
                     toggleModal(true);
                 });
@@ -583,6 +841,16 @@
                 if (isValid) {
                     submitBtn.classList.add('loading');
                     submitBtn.disabled = true;
+                    
+                    // In a real application, you would send the form data to your server here
+                    console.log('Form submitted:', {
+                        product: document.getElementById('productName').value,
+                        price: document.getElementById('productPrice').value,
+                        firstName: document.getElementById('firstName').value,
+                        lastName: document.getElementById('lastName').value,
+                        email: document.getElementById('email').value,
+                        notes: document.getElementById('notes').value
+                    });
                     
                     setTimeout(function() {
                         window.location.href = redirectUrl;

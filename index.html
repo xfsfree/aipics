@@ -770,6 +770,8 @@
                         input.value = '';
                     }
                 });
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
             }
             
             function toggleModal(show) {

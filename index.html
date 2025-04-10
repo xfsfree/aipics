@@ -452,6 +452,45 @@
             font-size: 1.2rem;
         }
         
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        
+        .terms-checkbox:hover {
+            background: rgba(0,0,0,0.03);
+        }
+        
+        .terms-checkbox input {
+            width: auto;
+            margin-right: 10px;
+            margin-top: 3px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+        }
+        
+        .terms-checkbox label {
+            font-weight: normal;
+            margin-bottom: 0;
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+        
+        .terms-checkbox a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+        
         footer {
             background: var(--dark);
             color: white;
@@ -723,6 +762,12 @@
                     <textarea id="notes" rows="3" placeholder="Describe what you want in your AI artwork..."></textarea>
                 </div>
                 
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a></label>
+                </div>
+                <div class="error-message" id="termsError">You must accept the terms to proceed</div>
+                
                 <button type="submit" class="submit-btn">Proceed to Payment</button>
             </form>
         </div>
@@ -756,6 +801,8 @@
             const modalProductName = document.getElementById('modalProductName');
             const modalProductPrice = document.getElementById('modalProductPrice');
             const formInputs = checkoutForm.querySelectorAll('input, textarea');
+            const termsCheckbox = document.getElementById('terms');
+            const termsError = document.getElementById('termsError');
             
             function resetForm() {
                 formInputs.forEach(input => {
@@ -763,6 +810,8 @@
                         input.value = '';
                     }
                 });
+                termsCheckbox.checked = false;
+                termsError.style.display = 'none';
                 submitBtn.classList.remove('loading');
                 submitBtn.disabled = false;
             }
@@ -841,6 +890,18 @@
                         error.style.display = 'none';
                     }
                 });
+                
+                if (!termsCheckbox.checked) {
+                    termsCheckbox.classList.add('shake');
+                    termsError.style.display = 'block';
+                    isValid = false;
+                    
+                    setTimeout(() => {
+                        termsCheckbox.classList.remove('shake');
+                    }, 500);
+                } else {
+                    termsError.style.display = 'none';
+                }
                 
                 if (isValid) {
                     submitBtn.classList.add('loading');
